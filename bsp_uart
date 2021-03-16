@@ -1,0 +1,69 @@
+ /**
+  ******************************************************************************
+  * @file    bsp_uart.c
+  * @author  liuyuzhou
+  * @version V1.0
+  * @date    2020-11-11
+  * @brief   uart底层应用函数 
+  ******************************************************************************
+  */
+
+
+
+#include "bsp_uart.h"
+
+
+/**
+ * @brief 发送字符串 
+ *
+ * @param 要发送的数据
+ *
+ * @return 返回空类型
+ *   @retval 无返回值
+ */
+void Usart_SendString(uint8_t *str)
+{
+	unsigned int k=0;
+  do 
+  {
+      HAL_UART_Transmit(&huart1,(uint8_t *)(str + k) ,1,1000);
+      k++;
+  } while(*(str + k)!='\0');
+  
+}
+
+
+/**
+ * @brief 重定向c库函数printf到串口usart1，重定向后可使用printf函数
+ *
+ * @param 
+ * @param 
+ * @return 
+ *   @retval 
+ */
+int fputc(int ch, FILE *f)
+{
+	/* 发送一个字节数据到串口USART1 */
+	HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 1000);	
+	
+	return (ch);
+}
+
+
+
+/**
+ * @brief 重定向c库函数scanf到串口usart1，重定向后可使用scanf、getchar等函数
+ *
+ * @param 
+ * @param 
+ * @return 
+ *   @retval 
+ */
+int fgetc(FILE *f)
+{
+		
+	int ch;
+	HAL_UART_Receive(&huart1, (uint8_t *)&ch, 1, 1000);	
+	return (ch);
+}
+
